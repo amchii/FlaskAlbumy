@@ -1,0 +1,11 @@
+<div>
+    <form method="post" action="{{ url_for('.test') }}" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="first">First</label>
+        <input type="text" name="first" id="first">
+        <label for="second">Second</label>
+        <input type="text" name="second" id="second">
+        <input type="file" name="file">
+        <input type="submit">
+    </form>
+</div>

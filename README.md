@@ -1,0 +1,1 @@
+来自于李辉的Flask书上的示例程序：[Albumy](https://github.com/greyli/albumy) , 修复了一些已知bug。

@@ -82,7 +82,8 @@ def show_followers(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['ALBUMY_USER_PER_PAGE']
-    pagination = user.followers.paginate(page=page, per_page=per_page)
+    # pagination = user.followers.paginate(page=page, per_page=per_page)
+    pagination = user.followers.filter(Follow.follower_id != user.id).paginate(page=page, per_page=per_page)
     follows = pagination.items
     return render_template('user/followers.html', user=user, pagination=pagination, follows=follows)
 

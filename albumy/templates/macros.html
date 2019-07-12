@@ -31,19 +31,21 @@
                       action="{{ url_for('user.unfollow', username=user.username, next=request.full_path) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-dark btn-sm">Unfollow</button>
-                    {% if current_user.is_followed_by(user) %}
-                        <p class="badge badge-light">Follow each other</p>
-                    {% endif %}
                 </form>
+                <br>
+                {% if current_user.is_followed_by(user) %}
+                    <p class="badge badge-light">Follow each other</p>
+                {% endif %}
             {% else %}
                 <form class="inline" method="post"
                       action="{{ url_for('user.follow', username=user.username, next=request.full_path) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-primary btn-sm">Follow</button>
-                    {% if current_user.is_followed_by(user) %}
-                        <p class="badge badge-light">Follows you</p>
-                    {% endif %}
                 </form>
+                <br>
+                {% if current_user.is_followed_by(user) %}
+                    <p class="badge badge-light">Follows you</p>
+                {% endif %}
             {% endif %}
         {% endif %}
     {% else %}

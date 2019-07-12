@@ -28,7 +28,7 @@
 
    
 
-   ​	显示后进行销毁 `$el.popover('dispose');`
+   ​		给`tooltip`的title传递函数可以正常显示，和Bluelog相同。
 
  6. 更换头像时若上传图片后不更新头像，则`user.avatar_raw`会被取代
 

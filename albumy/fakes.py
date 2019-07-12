@@ -28,6 +28,8 @@ def fake_admin():
 
 def fake_user(count=50):
     for i in range(count):
+        print(i+1)
+
         user = User(
             name=fake.name(),
             confirmed=True,
@@ -66,7 +68,7 @@ def fake_tag(count=20):
 def fake_photo(count=30):
     upload_path = current_app.config['ALBUMY_UPLOAD_PATH']
     for i in range(count):
-        print(i)
+        print(i+1)
 
         filename = 'random_%d.jpg' % i
         r = lambda: random.randint(128, 255)

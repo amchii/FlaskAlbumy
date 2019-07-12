@@ -9,7 +9,7 @@ from sqlalchemy import func
 from albumy.extensions import db
 from albumy.decorators import confirm_required, permission_required
 from albumy.forms.main import DescriptionForm, TagForm, CommentForm
-from albumy.models import Photo, Tag, Comment, Collect, Notification, Follow, User
+from albumy.models import Photo, Tag, Comment, Collect, Notification, Follow, User, Permissions
 from albumy.notifications import push_collect_notification, push_comment_notification
 from albumy.utils import resize_image, flash_errors
 
@@ -66,7 +66,7 @@ def search():
     if q == '':
         flash('Enter keyword about photo, user or tag.', 'warning')
 
-    category = request.args.get('category', 'photo')
+    category = request.args.get('category')
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['ALBUMY_SEARCH_RESULT_PER_PAGE']
     if category == 'user':
@@ -74,6 +74,7 @@ def search():
     elif category == 'tag':
         pagination = Tag.query.whooshee_search(q).paginate(page, per_page)
     else:
+        category = 'photo'
         pagination = Photo.query.whooshee_search(q).paginate(page, per_page)
     results = pagination.items
     return render_template('main/search.html', q=q, results=results, pagination=pagination, category=category)
@@ -155,7 +156,7 @@ def photo_previous(photo_id):
 @login_required
 def delete_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    if current_user != photo.author:
+    if current_user != photo.author and not current_user.can('MODERATE'):
         abort(403)
     db.session.delete(photo)
     db.session.commit()

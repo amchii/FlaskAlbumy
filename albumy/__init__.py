@@ -5,6 +5,7 @@ from flask import Flask, render_template
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 
+from albumy.blueprints.admin import admin_bp
 from albumy.blueprints.ajax import ajax_bp
 from albumy.blueprints.auth import auth_bp
 from albumy.blueprints.user import user_bp
@@ -52,6 +53,7 @@ def register_blueprints(app: Flask):
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(ajax_bp, url_prefix='/ajax')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
 
 def register_shell_context(app: Flask):

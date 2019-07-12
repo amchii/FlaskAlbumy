@@ -8,6 +8,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from albumy.extensions import db, whooshee
 
+
+class UserRoles:
+    LOCKED = 'Locked'
+    USER = 'User'
+    MODERATOR = 'Moderator'
+    ADMINISTRATOR = 'Administrator'
+
+
+class Permissions:
+    FOLLOW = 'FOLLOW'
+    COLLECT = 'COLLECT'
+    COMMENT = 'COMMENT'
+    UPLOAD = 'UPLOAD'
+    MODERATE = 'MODERATE'
+    ADMINISTER = 'ADMINISTER'
+
+
 roles_permissions = db.Table('roles_permissions',
                              db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
                              db.Column('permission_id', db.Integer, db.ForeignKey('permission.id'))
@@ -86,6 +103,9 @@ class User(db.Model, UserMixin):
     location = db.Column(db.String(50))
     member_since = db.Column(db.DateTime, default=datetime.utcnow)
 
+    locked = db.Column(db.Boolean, default=False)
+    active = db.Column(db.Boolean, default=True)
+
     avatar_raw = db.Column(db.String(64))
     avatar_raw_temp = db.Column(db.String(64))
     avatar_s = db.Column(db.String(64))
@@ -132,7 +152,7 @@ class User(db.Model, UserMixin):
     def set_role(self, role='User'):
         if self.role is None:
             if self.email == current_app.config['ALBUMY_ADMIN_EMAIL']:
-                self.role = Role.query.filter_by(name='Administrator').first()
+                self.role = Role.query.filter_by(name=UserRoles.ADMINISTRATOR).first()
             else:
                 self.role = Role.query.filter_by(name=role).first()
             db.session.commit()
@@ -147,7 +167,7 @@ class User(db.Model, UserMixin):
 
     @property
     def is_admin(self):
-        return self.role.name == 'Administrator'
+        return self.role.name == UserRoles.ADMINISTRATOR
 
     def can(self, permission_name):
         permission = Permission.query.filter_by(name=permission_name).first()
@@ -192,6 +212,28 @@ class User(db.Model, UserMixin):
     def follow_self_all(self):
         for user in User.query.all():
             user.follow(self)
+
+    @property
+    def is_active(self):
+        return self.active
+
+    def lock(self):
+        self.locked = True
+        self.role = Role.query.filter_by(name=UserRoles.LOCKED).first()
+        db.session.commit()
+
+    def unlock(self):
+        self.locked = False
+        self.role = Role.query.filter_by(name=UserRoles.USER).first()
+        db.session.commit()
+
+    def block(self):
+        self.active = False
+        db.session.commit()
+
+    def unblock(self):
+        self.active = True
+        db.session.commit()
 
 
 tagging = db.Table('tagging',

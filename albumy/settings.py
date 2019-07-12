@@ -8,6 +8,8 @@
 import os
 import sys
 
+from albumy.models import UserRoles, Permissions
+
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 # SQLite URI compatible

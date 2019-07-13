@@ -15,17 +15,7 @@ from albumy.utils import resize_image, flash_errors
 
 main_bp = Blueprint('main', __name__)
 
-# BEGIN
-@main_bp.route('/mytest', methods=['GET', 'POST'])
-def test():
-    if request.method == 'POST':
-        print(request.form)
-        print(request.get_data())
-        print(request.form.get('first'))
-        print(type(request.form.get('file')))
-        print(type(request.files.get('file')))
-    return render_template('main/mytest.html')
-# END
+
 
 @main_bp.route('/avatar/<path:filename>')
 def get_avatar(filename):

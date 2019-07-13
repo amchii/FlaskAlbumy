@@ -17,9 +17,10 @@ user_bp = Blueprint('user', __name__)
 
 @user_bp.before_app_request
 def check_user_block():
-    if not current_user.active:
-        logout_user()
-        flash('Your account is block.', 'danger')
+    if current_user.is_authenticated:
+        if not current_user.active:
+            logout_user()
+            flash('Your account is block.', 'danger')
 
 
 @user_bp.route('/<username>')
